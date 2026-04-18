@@ -1,0 +1,43 @@
+---
+title: "Your Neo Letter profile and stats"
+description: "Every signed-in Neo Letter player has a public profile page showing games played, wins, and total points. Learn how stats are tracked and updated."
+---
+
+Every Neo Letter account has a public profile page at `/profile/{username}`. Anyone can visit a profile by navigating to that URL — no account is required to view it. The page shows your profile picture (sourced from your Google account), your username, and the three stats that Neo Letter tracks for signed-in players.
+
+<Note>
+  Stats are only recorded for signed-in users. Games played as a guest are not counted toward any profile. Sign in before joining a room if you want your results tracked.
+</Note>
+
+## Stats
+
+| Stat | Description |
+|---|---|
+| **Games Played** | Incremented once per completed game. A game is considered complete when the current round reaches the end of the answer list. |
+| **Wins** | Incremented by 1 when you finish first place (highest total points) in a completed multiplayer game. Solo mode games do not count toward wins. |
+| **Total Points** | Running sum of all points earned across every game. Points from each game are added to this total when the game ends. |
+
+Stats are displayed using compact number formatting — for example, `1,400` is shown as `1.4K`.
+
+## Profile picture
+
+Your profile picture is the photo associated with your Google account at the time you signed up. It is stored as a URL in your Firestore profile document and is not hosted by Neo Letter directly. If you update your Google profile photo, the change will not be reflected automatically.
+
+## Settings
+
+A **Settings** link is visible on your own profile page at `/profile/{username}/settings`. The settings page is only accessible to the account owner — other users will see a "Not Authorized" message if they navigate to it directly. From settings you can delete your profile, which permanently removes your Firestore document and all associated stats.
+
+## Finding a profile
+
+Profiles are looked up by exact username match, and the lookup is case-sensitive. To find a player's profile, navigate to `/profile/{username}` with the exact username as it appears in the game. There is no fuzzy search or directory listing.
+
+## Related pages
+
+<CardGroup cols={2}>
+  <Card title="Create an account" icon="user-plus" href="/accounts/sign-up">
+    Sign up with Google to start tracking your stats and build your profile.
+  </Card>
+  <Card title="Leaderboard" icon="trophy" href="/accounts/leaderboard">
+    See how the global leaderboard will rank players by total points.
+  </Card>
+</CardGroup>

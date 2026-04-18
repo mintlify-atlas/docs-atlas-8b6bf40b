@@ -1,0 +1,53 @@
+---
+title: "Scoring and points in Neo Letter"
+description: "Understand how Neo Letter awards points per round, the scoring formula, and how wins and stats are tracked for signed-in players."
+---
+
+Neo Letter rewards efficiency — the fewer guesses you need to find the word, the more points you earn. Only the first player to guess correctly receives points for that round, so being both fast and accurate is the key to winning.
+
+## Points per round
+
+Points are calculated using the formula:
+
+```
+points = 100 - (guessCount - 1) * 10
+```
+
+Where `guessCount` is the number of guesses the winning player used to find the word.
+
+| Guesses used | Points awarded |
+|-------------|----------------|
+| 1 | 100 |
+| 2 | 90 |
+| 3 | 80 |
+| 4 | 70 |
+| 5 | 60 |
+| 6 | 50 |
+| Did not guess correctly | 0 |
+
+All players who did not guess the word correctly — including players who exhausted all 6 guesses — receive 0 points for that round.
+
+## How winning is determined
+
+- Points are awarded **only to the first player** who submits the correct word.
+- The winner's client is responsible for writing the point update to Firebase for all players in the room.
+- After the winning guess, a 5-second delay plays before the game advances to the next round and guesses are reset.
+- If **no player** guesses the word within 6 tries, the round resets automatically and moves to the next word. No points are awarded for that round.
+
+## End of game
+
+After all rounds have been played, the game transitions to the finished state. The player with the highest total points is shown as the winner. In the event that no player has scored any points, no winner is declared.
+
+## Profile stats
+
+Signed-in players have three stats tracked on their profile across all games:
+
+- **Wins** — incremented when you finish first in a multiplayer game (not awarded in Solo mode)
+- **Games played** — incremented once per completed room
+- **Total points** — your cumulative points across all games
+
+Stats are written to the player's profile document at the end of the final round, and are only recorded once per room using the `lastRoom` field to prevent duplicate writes.
+
+<Note>
+  Solo mode games count toward **games played** and **total points**, but not toward **wins** — wins are only awarded in rooms with more than one player.
+</Note>

@@ -1,0 +1,45 @@
+---
+title: "Create a Neo Letter account"
+description: "Create a Neo Letter account with Google to unlock persistent stat tracking, a public profile page, and a username that follows you across all rooms."
+---
+
+An account is entirely optional in Neo Letter — you can jump into any game as a guest without signing in. Creating an account unlocks persistent stat tracking (games played, wins, and total points), a public profile page, and a username that follows you across rooms. Your profile picture is pulled automatically from your Google account, so there is nothing extra to configure.
+
+## Guest mode
+
+<Note>
+  Guests can play Neo Letter without an account. When you first visit the site, a UUID is assigned to you via a `neo-letter-game-uid` cookie that persists for one year. This ID is used to identify you in game rooms, but it is not tied to any stats — guest games are not recorded.
+</Note>
+
+## Sign-up flow
+
+<Steps>
+  <Step title="Open the sign-up page">
+    Click **Create Account** in the navigation bar, or go directly to `/signup`. If you are already signed in, the page will tell you so and no action is needed.
+  </Step>
+  <Step title="Sign in with Google">
+    Click the **Sign Up / Sign In** button. A Google OAuth popup will open. Choose the Google account you want to use. If that account is already registered with Neo Letter, you will be redirected to the home page immediately.
+  </Step>
+  <Step title="Choose a username">
+    New users land on a username entry form after signing in with Google. Enter a username that meets the rules below, wait for the availability check to complete, then click **Create Account**.
+  </Step>
+  <Step title="Profile created">
+    Your profile is written to Firestore and you are redirected to the home page. Your profile picture, email, and Google UID are recorded automatically — no extra setup is required.
+  </Step>
+</Steps>
+
+## Username rules
+
+| Rule | Detail |
+|---|---|
+| **Length** | 3 to 15 characters |
+| **Allowed characters** | Letters (`a–z`, `A–Z`), digits (`0–9`), and underscores (`_`) |
+| **Spaces** | Not allowed — spaces are automatically converted to underscores as you type |
+| **Profanity** | Checked against the [PurgoMalum API](https://www.purgomalum.com/); profane usernames are rejected |
+| **Uniqueness** | Must not already be taken by another account; availability is checked in real time |
+
+Username matching is case-sensitive. `Alex` and `alex` are treated as different usernames.
+
+## Signing out
+
+To sign out, navigate to `/signup?action=signout`. You can also sign out from the user menu in the navigation bar. After signing out you are returned to the home page as a guest.

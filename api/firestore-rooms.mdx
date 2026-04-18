@@ -1,0 +1,199 @@
+---
+title: "Firestore rooms data model"
+description: "Schema reference for the rooms collection in Firestore, including the Room document, per-player GamePlayer subdocuments, and Message subdocuments."
+---
+
+Game state in Neo Letter lives in three nested Firestore paths under the `rooms` collection. The top-level room document holds configuration and round state. Two subcollections hang off each room: `players` stores one document per participant, and `messages` stores the in-room chat history. All three levels are updated in real time by the React client using Firestore's `onSnapshot` listeners.
+
+## Collection paths
+
+| Path | Document type |
+|------|---------------|
+| `rooms/{roomId}` | Room |
+| `rooms/{roomId}/players/{uid}` | GamePlayer |
+| `rooms/{roomId}/messages/{messageId}` | Message |
+
+Room IDs are five-digit numeric strings zero-padded to five characters (e.g. `"04821"`). They are generated on the client at room creation time and checked against Firestore to avoid collisions before use.
+
+## Room document
+
+The room document is written when a player clicks **Create Party** and is updated throughout the game as rounds progress and players join.
+
+<ResponseField name="id" type="string" required>
+  The five-digit room ID, mirrored inside the document for convenience (e.g. `"04821"`).
+</ResponseField>
+
+<ResponseField name="answers" type="string[]" required>
+  Array of five-letter lowercase words — one per round. Populated from `/api/words` at creation time, or from the creator's custom word list if `customWords` is `true`.
+</ResponseField>
+
+<ResponseField name="maxPlayers" type="number" required>
+  Maximum number of players allowed in the room. Preset values: `1` (Solo), `2` (Versus), `5` (Party), `10` (Mega Party). Custom rooms accept any number.
+</ResponseField>
+
+<ResponseField name="players" type="string[]" required>
+  Array of UIDs of players currently in the room.
+</ResponseField>
+
+<ResponseField name="usernames" type="string[]" required>
+  Array of display names for players in the room. Used to prevent duplicate usernames within the same room.
+</ResponseField>
+
+<ResponseField name="roomType" type='"public" | "private"' required>
+  Whether the room appears in public listings. Set by the creator at room creation time.
+</ResponseField>
+
+<ResponseField name="started" type="boolean" required>
+  `true` once all players have marked ready and the first round has begun.
+</ResponseField>
+
+<ResponseField name="allowLateJoiners" type="boolean" required>
+  When `true`, players can join a room after it has already started.
+</ResponseField>
+
+<ResponseField name="allowMessages" type="boolean" required>
+  When `true`, the in-room chat is enabled and the `messages` subcollection is populated. Always `false` for Solo rooms.
+</ResponseField>
+
+<ResponseField name="round" type="number" required>
+  Zero-based index of the current round. Incremented by the room creator's client after each round ends. The game is over when `round >= answers.length`.
+</ResponseField>
+
+<ResponseField name="customWords" type="boolean" required>
+  `true` when the creator supplied a custom word list instead of using randomly fetched words.
+</ResponseField>
+
+<ResponseField name="allowProfanity" type="boolean" required>
+  When `true`, players can choose usernames that would otherwise be blocked by the profanity filter.
+</ResponseField>
+
+### Example Room document
+
+```json
+{
+  "id": "04821",
+  "answers": ["crane", "light", "plant", "storm", "brick"],
+  "maxPlayers": 5,
+  "players": ["uid_abc123", "uid_def456"],
+  "usernames": ["alice", "bob"],
+  "roomType": "private",
+  "started": true,
+  "allowLateJoiners": true,
+  "allowMessages": true,
+  "round": 1,
+  "customWords": false,
+  "allowProfanity": false
+}
+```
+
+## GamePlayer document
+
+One GamePlayer document exists per player at `rooms/{roomId}/players/{uid}`. It is written when a player joins and updated in real time as they submit guesses and earn points.
+
+<ResponseField name="uid" type="string" required>
+  The player's Firebase Auth UID (or a UUID generated client-side for guests).
+</ResponseField>
+
+<ResponseField name="name" type="string" required>
+  The display name chosen by the player when joining the room.
+</ResponseField>
+
+<ResponseField name="role" type='"user" | "creator"' required>
+  `"creator"` for the player who created the room; `"user"` for everyone else. The creator's client is responsible for advancing the round counter.
+</ResponseField>
+
+<ResponseField name="points" type="number" required>
+  Cumulative points earned across all completed rounds. Winning a round awards `100 - (guesses_used - 1) * 10` points.
+</ResponseField>
+
+<ResponseField name="guesses" type="string[]" required>
+  Array of uppercase words the player has submitted in the current round. Reset to `[]` at the start of each new round.
+</ResponseField>
+
+<ResponseField name="guessed" type="boolean" required>
+  `true` when the player has correctly guessed the current round's word.
+</ResponseField>
+
+<ResponseField name="ready" type="boolean" required>
+  `true` when the player has toggled ready in the lobby. The game starts once all players are ready.
+</ResponseField>
+
+<ResponseField name="signedIn" type="boolean" required>
+  `true` when the player's UID matches a Firebase Auth session (i.e. they are not a pure guest).
+</ResponseField>
+
+<ResponseField name="wins" type="number">
+  Snapshot of the player's all-time win count at join time. Optional; only present when the player is signed in.
+</ResponseField>
+
+<ResponseField name="gamesPlayed" type="number">
+  Snapshot of the player's all-time games-played count at join time. Optional; only present when the player is signed in.
+</ResponseField>
+
+<ResponseField name="totalPoints" type="number">
+  Snapshot of the player's all-time cumulative points at join time. Optional; only present when the player is signed in.
+</ResponseField>
+
+### Example GamePlayer document
+
+```json
+{
+  "uid": "uid_abc123",
+  "name": "alice",
+  "role": "creator",
+  "points": 180,
+  "guesses": ["CRANE", "LIGHT"],
+  "guessed": false,
+  "ready": true,
+  "signedIn": true,
+  "wins": 12,
+  "gamesPlayed": 34,
+  "totalPoints": 4200
+}
+```
+
+## Message document
+
+One Message document exists per chat message at `rooms/{roomId}/messages/{messageId}`. Messages are queried ordered by `reversedCreatedAt` descending, limited to the 20 most recent.
+
+<ResponseField name="id" type="string" required>
+  The Firestore document ID, written back into the document after creation so the client can reference it without a separate lookup.
+</ResponseField>
+
+<ResponseField name="messengerID" type="string" required>
+  UID of the player who sent the message. The system welcome message uses `"Admin"`.
+</ResponseField>
+
+<ResponseField name="messengerUsername" type="string" required>
+  Display name of the sender. The system welcome message uses `"Neo Letter"`.
+</ResponseField>
+
+<ResponseField name="content" type="string" required>
+  The text body of the message.
+</ResponseField>
+
+<ResponseField name="createdAt" type="Timestamp" required>
+  Firestore server timestamp set at write time.
+</ResponseField>
+
+<ResponseField name="reversedCreatedAt" type="number" required>
+  Negative Unix timestamp in milliseconds (`-1 * Date.now()`). Used to order messages descending in a Firestore query, since Firestore does not support descending order on server timestamps directly in all SDK configurations.
+</ResponseField>
+
+<ResponseField name="readBy" type="string[]" required>
+  Array of UIDs that have read the message. Used to drive unread-message indicators in the UI.
+</ResponseField>
+
+### Example Message document
+
+```json
+{
+  "id": "msg_xyz789",
+  "messengerID": "uid_abc123",
+  "messengerUsername": "alice",
+  "content": "good luck everyone!",
+  "createdAt": "2024-06-01T12:34:56Z",
+  "reversedCreatedAt": -1717244096000,
+  "readBy": ["uid_abc123", "uid_def456"]
+}
+```

@@ -1,0 +1,56 @@
+---
+title: "How to play Neo Letter"
+description: "Learn Neo Letter's rules: tile color feedback, the ready system, how rounds reset when no one guesses, and how multiplayer scoring works."
+---
+
+Neo Letter is a real-time multiplayer word game based on the classic Wordle mechanic. Every player in the room sees the same hidden 5-letter word and has up to 6 attempts to guess it correctly. The first player to guess the word wins the round and earns points — so speed and accuracy both matter.
+
+## Tile colors
+
+After each guess, every tile changes color to show how close you are to the answer.
+
+| Color | Meaning |
+|-------|---------|
+| Green | Correct letter in the correct position |
+| Yellow | Correct letter, but in the wrong position |
+| Gray | Letter is not in the word at all |
+
+Use the color feedback to eliminate letters and narrow down possibilities with each guess.
+
+## Round flow
+
+<Steps>
+  <Step title="All players mark ready">
+    After joining the lobby, each player must toggle their ready status. The round begins only when every player in the room has marked themselves as ready.
+  </Step>
+  <Step title="Guess the word">
+    Type a valid 5-letter word and submit your guess. The game accepts only real words — each guess is validated against the word list before it is counted.
+  </Step>
+  <Step title="Read the tile feedback">
+    The color-coded tiles update instantly after each guess. Use the on-screen keyboard, which also highlights used letters, to track your progress.
+  </Step>
+  <Step title="First correct guess wins the round">
+    All players guess simultaneously. The first player to submit the correct word wins the round. A 5-second countdown plays before the next round begins.
+  </Step>
+  <Step title="Round resets if no one guesses">
+    If every player uses all 6 guesses without getting the word right, the round resets automatically and the game moves on to the next word on the list.
+  </Step>
+  <Step title="Game ends after all rounds">
+    Once all words in the list have been played, the game ends and the player with the most total points is declared the winner.
+  </Step>
+</Steps>
+
+## Multiplayer rules
+
+- All players see the **same word** each round — there is no hidden asymmetry.
+- Guessing happens **simultaneously**; you can see when other players have submitted a correct guess.
+- Only the **first player** to guess correctly earns points for that round. All other players receive 0 points.
+- If a player guesses correctly, a "Round Over" overlay appears for everyone else in the room while the 5-second transition plays.
+
+## In-room chat
+
+If the room creator enabled **Chatting**, a message panel is available during the game. Chat is disabled automatically in Solo mode. Up to 20 recent messages are shown at a time.
+
+<Note>
+  Profanity filtering in chat depends on the room's **Profanity** setting. If profanity is disabled by the creator, the game will block offensive messages and display names.
+</Note>

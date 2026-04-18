@@ -1,0 +1,40 @@
+---
+title: "Neo Letter API overview"
+description: "The Neo Letter Fastify backend serves random words, validates guesses, and provides admin endpoints for Firestore room cleanup. No authentication required."
+---
+
+Neo Letter's backend is a lightweight [Fastify](https://fastify.dev) server deployed on Vercel. It handles two responsibilities the React client relies on: supplying random five-letter words when a room is created, and checking whether a submitted guess is in the valid-guesses list. A third admin endpoint lets you clear all active rooms from Firestore in one call. The server has no authentication layer — all endpoints are public.
+
+## Base URLs
+
+| Environment | Base URL |
+|-------------|----------|
+| Production  | `https://neo-letter-fastify.vercel.app` |
+| Development | `http://localhost:4000` |
+
+## CORS policy
+
+In development the server allows requests from any `localhost` port (1–10000). In production only `https://neo-letter.web.app` is permitted.
+
+## Endpoints
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/words` | Get random five-letter words |
+| GET | `/api/valid` | Check whether a word is a valid guess |
+| DELETE | `/api/rooms` | Delete all rooms and subcollections (admin) |
+
+<CardGroup cols={2}>
+  <Card title="GET /api/words" icon="shuffle" href="/api/words">
+    Fetch a configurable number of random five-letter words for use as round answers.
+  </Card>
+  <Card title="GET /api/valid" icon="spell-check" href="/api/valid">
+    Validate whether a submitted guess is a recognized five-letter word.
+  </Card>
+  <Card title="DELETE /api/rooms" icon="trash" href="/api/rooms">
+    Remove all game room documents and their subcollections from Firestore.
+  </Card>
+  <Card title="Firestore rooms" icon="database" href="/api/firestore-rooms">
+    Explore the data model for rooms, players, and messages in Firestore.
+  </Card>
+</CardGroup>

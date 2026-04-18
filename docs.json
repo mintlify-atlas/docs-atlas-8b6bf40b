@@ -1,122 +1,86 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "mint",
-  "name": "Mint Starter Kit",
+  "name": "Neo Letter",
+  "theme": "almond",
   "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
+    "primary": "#e02d44",
+    "light": "#043243",
+    "dark": "#5f495b"
   },
-  "favicon": "/favicon.svg",
+  "favicon": "https://media.brand.dev/3ba6e2e8-aa4c-47bf-b512-7d61efcc73d0.png",
+  "navbar": {
+    "primary": {
+      "type": "github",
+      "href": "https://github.com/NeoPrint3D/Neo-Letter"
+    }
+  },
+  "footer": {
+    "socials": {
+      "github": "https://github.com/NeoPrint3D/Neo-Letter"
+    }
+  },
   "navigation": {
     "tabs": [
       {
-        "tab": "Guides",
+        "tab": "Documentation",
         "groups": [
           {
-            "group": "Getting started",
+            "group": "Get Started",
             "pages": [
-              "index",
+              "introduction",
               "quickstart",
-              "development"
+              "self-hosting"
             ]
           },
           {
-            "group": "Customization",
+            "group": "Gameplay",
             "pages": [
-              "essentials/settings",
-              "essentials/navigation"
+              "gameplay/how-to-play",
+              "gameplay/creating-a-room",
+              "gameplay/joining-a-room",
+              "gameplay/game-modes",
+              "gameplay/scoring"
             ]
           },
           {
-            "group": "Writing content",
+            "group": "Accounts & Profiles",
             "pages": [
-              "essentials/markdown",
-              "essentials/code",
-              "essentials/images",
-              "essentials/reusable-snippets"
+              "accounts/sign-up",
+              "accounts/profile",
+              "accounts/leaderboard"
             ]
           },
           {
-            "group": "AI tools",
+            "group": "Contributing",
             "pages": [
-              "ai-tools/cursor",
-              "ai-tools/claude-code",
-              "ai-tools/windsurf"
+              "contributing/overview",
+              "contributing/adding-words",
+              "contributing/local-setup"
             ]
           }
         ]
       },
       {
-        "tab": "API reference",
+        "tab": "API Reference",
         "groups": [
           {
-            "group": "API documentation",
+            "group": "Server API",
             "pages": [
-              "api-reference/introduction"
+              "api/overview",
+              "api/words",
+              "api/valid",
+              "api/rooms"
             ]
           },
           {
-            "group": "Endpoint examples",
+            "group": "Firebase Data Model",
             "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete",
-              "api-reference/endpoint/webhook"
+              "api/firestore-rooms",
+              "api/firestore-users"
             ]
           }
         ]
       }
-    ],
-    "global": {
-      "anchors": [
-        {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
-        },
-        {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
-        }
-      ]
-    }
-  },
-  "logo": {
-    "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg"
-  },
-  "navbar": {
-    "links": [
-      {
-        "label": "Support",
-        "href": "mailto:hi@mintlify.com"
-      }
-    ],
-    "primary": {
-      "type": "button",
-      "label": "Dashboard",
-      "href": "https://dashboard.mintlify.com"
-    }
-  },
-  "contextual": {
-    "options": [
-     "copy",
-     "view",
-     "chatgpt",
-     "claude",
-     "perplexity",
-     "mcp",
-     "cursor",
-     "vscode"
-   ]
-  },
-  "footer": {
-    "socials": {
-      "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
-    }
+    ]
   }
 }

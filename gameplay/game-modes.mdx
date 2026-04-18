@@ -1,0 +1,51 @@
+---
+title: "Neo Letter game modes and room settings"
+description: "Compare Solo, Versus, Party, Mega Party, and Custom modes, and understand how each room setting affects your Neo Letter game."
+---
+
+Neo Letter offers five game modes to match any group size, from solo practice sessions to large multiplayer lobbies. When you create a room you choose a mode and fine-tune behavior with a set of toggles that control late joining, custom words, chat, and more.
+
+## Game modes
+
+| Mode | Max players | Intended use |
+|------|-------------|--------------|
+| Solo | 1 | Practice the Wordle mechanic alone; all rounds and points still count toward your profile |
+| Versus | 2 | One-on-one head-to-head competition |
+| Party | 5 | Small groups, friend circles, or casual sessions |
+| Mega Party | 10 | Larger groups, game nights, or streaming audiences |
+| Custom | Any number | Tournaments, classrooms, or any size that doesn't fit a preset |
+
+When **Custom** is selected in the dropdown, a number input appears where you can type in the exact player limit you need.
+
+<CardGroup cols={2}>
+  <Card title="Party" icon="users">
+    Up to 5 players. The most common mode for casual friend groups. Balanced enough that a single fast guesser doesn't dominate every round.
+  </Card>
+  <Card title="Mega Party" icon="star">
+    Up to 10 players. Great for larger gatherings or live-stream events where viewers join the host's room and compete together.
+  </Card>
+</CardGroup>
+
+## Room settings
+
+Room settings are configured at creation time and cannot be changed once the room is live.
+
+| Setting | Field | Default | Effect |
+|---------|-------|---------|--------|
+| Late Starts | `allowLateJoiners` | On | When enabled, players can join after the game has started. When disabled, the join page shows an error for started rooms. |
+| Cust. Words | `customWords` | Off | When enabled, the creator enters their own 5-letter words. Each word becomes one round. Random server words are not used. |
+| Private | `roomType` | On | Controls whether the room is public or private. Players need the 5-digit code to join either way. |
+| Chatting | `allowMessages` | On | Enables the in-room message panel during gameplay. Always off in Solo mode, regardless of this setting. |
+| Profanity | `allowProfanity` | Off | When disabled, display names and chat messages are screened by a profanity filter. Flagged submissions are rejected. |
+
+<Note>
+  Chat is always disabled in Solo mode. Even if Chatting is toggled on when creating a Solo room, `allowMessages` is stored as `false` in Firebase.
+</Note>
+
+## Custom words
+
+Enabling **Cust. Words** replaces the random word list with words you provide. After toggling the option, click **Choose Custom Words** to open the word editor. Type a 5-letter word and press enter to add it to the list — each entry becomes one round. Click any word in the list to remove it. The total round count equals the number of words you add.
+
+<Warning>
+  Every custom word must be exactly 5 letters. Shorter or longer entries are rejected with a warning before they are added to the list.
+</Warning>

@@ -1,0 +1,33 @@
+---
+title: "Neo Letter leaderboard"
+description: "Neo Letter's global leaderboard will rank the top 10 players by total points. The feature is in active development — individual profile stats are already live."
+---
+
+Neo Letter is building a global leaderboard to surface the top players across all games. The leaderboard is intended to rank players by their `totalPoints` stat — the running total of every point earned since account creation. The page already exists at `/leaderboard`, but data is not yet fetched or displayed.
+
+<Info>
+  The leaderboard is in active development. The underlying Firestore query is defined but not yet subscribed to, so the list on `/leaderboard` is currently empty. This page will be updated when the feature is complete.
+</Info>
+
+## What the leaderboard will show
+
+When the leaderboard is fully implemented, it will display the top 10 players ordered by total points. Each entry will show the player's username and their position in the ranking.
+
+| Column | Description |
+|---|---|
+| **Rank** | The player's position (1st, 2nd, 3rd, …, 10th) |
+| **Username** | The player's chosen Neo Letter username |
+| **Total Points** | Cumulative points earned across all games |
+
+## Tracking stats in the meantime
+
+Individual stats are already recorded and publicly viewable for every signed-in player. You can check your own — or any other player's — games played, wins, and total points right now.
+
+<CardGroup cols={2}>
+  <Card title="Your profile and stats" icon="chart-bar" href="/accounts/profile">
+    View games played, wins, and total points on any player's public profile page.
+  </Card>
+  <Card title="Create an account" icon="user-plus" href="/accounts/sign-up">
+    Sign up with Google so your stats are tracked and ready when the leaderboard launches.
+  </Card>
+</CardGroup>

@@ -1,0 +1,48 @@
+---
+title: "Joining a Neo Letter game room"
+description: "Enter a 5-digit room code, pick a display name, and join a Neo Letter lobby as a guest or signed-in player. Covers late joining and error states."
+---
+
+Joining a Neo Letter room takes only a few seconds. You need the 5-digit room code from the person who created the game. No account is required — guests are assigned a UUID-based session automatically and can play immediately.
+
+## Join flow
+
+<Steps>
+  <Step title="Go to /join">
+    Navigate to the Join page. If you were just redirected here after creating a room, the room code is pre-filled and the next step is already validated.
+  </Step>
+  <Step title="Enter the room code">
+    Type the 5-digit numeric room code into the Room ID field. Only digits are accepted; the field caps at 5 characters. Click **Continue** to validate the room.
+  </Step>
+  <Step title="Enter a display name">
+    Type the username you want other players to see. Display names must be at least 3 characters and can contain letters and numbers. If you are signed in, you can tap the prompt to use your account username instead.
+  </Step>
+  <Step title="Click Join Room">
+    Clicking **Join Room** writes your player record to the room in Firebase and redirects you to the live game room at `/room/{roomId}`.
+  </Step>
+  <Step title="Mark yourself ready">
+    In the lobby, toggle your ready status. The game does not start until every player in the room has marked themselves as ready. In Solo mode, the game starts immediately without a ready check.
+  </Step>
+</Steps>
+
+## Guest sessions
+
+A Google account is not required to play. If you are not signed in, the game assigns a UUID-based session identifier to your browser. Your in-game stats for that session (points, guesses) are tracked for the duration of the room. Profile stats like lifetime wins and games played are only persisted for signed-in players.
+
+## Late joining
+
+If the room creator enabled **Late Starts**, you can join a room that has already begun. You will enter mid-game and start participating from the current round. If late joining is disabled, attempting to enter a started room will show an error.
+
+## Error states
+
+| Error message | Cause |
+|-------|-------|
+| Room does not exist | The room code you entered does not match any active room in Firebase |
+| Room already started | The room is in progress and the creator disabled late joining |
+| Room is full | The number of current players has reached the room's maximum |
+| Inappropriate name | Your display name was flagged by the profanity filter and the room does not allow profanity |
+| Usernames already taken | Another player in the room is already using that display name |
+
+<Tip>
+  If you created the room, you are redirected to the join page automatically with your room code pre-filled. You still need to enter a display name and click Join Room to enter the lobby.
+</Tip>

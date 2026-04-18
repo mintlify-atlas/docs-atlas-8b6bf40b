@@ -1,0 +1,56 @@
+---
+title: "GET /api/words — fetch random words"
+description: "GET /api/words returns randomly selected five-letter words from the Neo Letter word pool. Pass count to control how many words are returned."
+---
+
+When a player creates a room, the React client calls this endpoint to fetch one random five-letter word per round. The words are drawn at random from the server's built-in word list and returned as lowercase strings. Pass the `count` query parameter to control how many words are returned — one per round you want to play.
+
+## Endpoint
+
+```
+GET /api/words
+```
+
+## Query parameters
+
+<ParamField query="count" type="number" default="10">
+  The number of random words to return. Defaults to `10` if omitted.
+</ParamField>
+
+## Response
+
+**200 OK**
+
+<ResponseField name="words" type="string[]" required>
+  An array of randomly selected five-letter lowercase strings.
+</ResponseField>
+
+## Examples
+
+<CodeGroup>
+
+```bash cURL
+curl "https://neo-letter-fastify.vercel.app/api/words?count=5"
+```
+
+```javascript JavaScript
+const res = await fetch(
+  "https://neo-letter-fastify.vercel.app/api/words?count=5"
+);
+const { words } = await res.json();
+// words => ["crane", "light", "plant", "storm", "brick"]
+```
+
+</CodeGroup>
+
+**Response**
+
+```json
+{
+  "words": ["crane", "light", "plant", "storm", "brick"]
+}
+```
+
+<Note>
+  The word list is fixed at server startup. Duplicate words in the same request are possible since each draw is independent.
+</Note>

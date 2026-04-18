@@ -1,0 +1,84 @@
+---
+title: "Firestore users data model"
+description: "Schema reference for the users collection in Firestore, which stores persistent profile and lifetime stat data for signed-in Neo Letter players."
+---
+
+When a player signs in with Google and chooses a username, Neo Letter writes a UserProfile document to the `users` collection. This document stores the player's display name, profile photo URL, lifetime statistics, and a guard field (`lastRoom`) that prevents duplicate stat updates when a game ends. Guest players (those who never sign in) do not have a document in this collection.
+
+## Collection path
+
+| Path | Document type |
+|------|---------------|
+| `users/{uid}` | UserProfile |
+
+The document ID is the player's Firebase Auth UID.
+
+## UserProfile document
+
+<ResponseField name="uid" type="string" required>
+  The player's Firebase Auth UID. Mirrors the document ID for convenience.
+</ResponseField>
+
+<ResponseField name="username" type="string" required>
+  The player's chosen display name. Usernames must be at least three characters, contain only alphanumeric characters and underscores, and must be unique across all users. Checked against a profanity filter on creation.
+</ResponseField>
+
+<ResponseField name="email" type="string" required>
+  The email address associated with the player's Google account.
+</ResponseField>
+
+<ResponseField name="profilePic" type="string" required>
+  URL of the player's Google account profile photo. Empty string if no photo is available.
+</ResponseField>
+
+<ResponseField name="wins" type="number" required>
+  Total number of rounds the player has won across all completed multiplayer games (not counted in Solo mode).
+</ResponseField>
+
+<ResponseField name="gamesPlayed" type="number" required>
+  Total number of games the player has completed.
+</ResponseField>
+
+<ResponseField name="totalPoints" type="number" required>
+  Cumulative points earned across all completed games.
+</ResponseField>
+
+<ResponseField name="lastRoom" type="string" required>
+  The room ID of the most recently completed game. Before incrementing `wins`, `gamesPlayed`, or `totalPoints` at game end, the client checks this field against the current room ID. If they match, the update is skipped — preventing duplicate stat counting if the game-end handler fires more than once.
+</ResponseField>
+
+<ResponseField name="createdAt" type="Timestamp" required>
+  Firestore server timestamp set when the profile was first created.
+</ResponseField>
+
+<ResponseField name="updatedAt" type="Timestamp" required>
+  Firestore server timestamp set when the profile was first created. Reserved for future profile update flows.
+</ResponseField>
+
+## How stats are updated
+
+Stats are incremented by the client inside `GameRoom.tsx` when the game ends (i.e. when `room.round >= room.answers.length`). The update uses Firestore's `increment()` operator so concurrent writes do not overwrite each other:
+
+- `wins` — incremented by `1` if the player placed first and the room was not Solo mode
+- `gamesPlayed` — always incremented by `1`
+- `totalPoints` — incremented by the player's points for that game
+- `lastRoom` — set to the current room ID to prevent double-counting
+
+Only signed-in players (`signedIn === true` on the GamePlayer document) trigger this update.
+
+## Example UserProfile document
+
+```json
+{
+  "uid": "uid_abc123",
+  "username": "alice",
+  "email": "alice@example.com",
+  "profilePic": "https://lh3.googleusercontent.com/a/example",
+  "wins": 12,
+  "gamesPlayed": 34,
+  "totalPoints": 4200,
+  "lastRoom": "04821",
+  "createdAt": "2024-01-15T10:00:00Z",
+  "updatedAt": "2024-01-15T10:00:00Z"
+}
+```

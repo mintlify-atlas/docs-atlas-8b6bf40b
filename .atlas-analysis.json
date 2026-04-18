@@ -1,0 +1,94 @@
+{
+  "projectType": "saas",
+  "projectName": "Neo Letter",
+  "projectDescription": "A real-time multiplayer Wordle party game where players join rooms to compete simultaneously in guessing five-letter words.",
+  "theme": "almond",
+  "primaryColor": "#e02d44",
+  "lightColor": "#043243",
+  "darkColor": "#5f495b",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": [
+              "introduction",
+              "quickstart",
+              "self-hosting"
+            ]
+          },
+          {
+            "group": "Gameplay",
+            "pages": [
+              "gameplay/how-to-play",
+              "gameplay/creating-a-room",
+              "gameplay/joining-a-room",
+              "gameplay/game-modes",
+              "gameplay/scoring"
+            ]
+          },
+          {
+            "group": "Accounts & Profiles",
+            "pages": [
+              "accounts/sign-up",
+              "accounts/profile",
+              "accounts/leaderboard"
+            ]
+          },
+          {
+            "group": "Contributing",
+            "pages": [
+              "contributing/overview",
+              "contributing/adding-words",
+              "contributing/local-setup"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API Reference",
+        "groups": [
+          {
+            "group": "Server API",
+            "pages": [
+              "api/overview",
+              "api/words",
+              "api/valid",
+              "api/rooms"
+            ]
+          },
+          {
+            "group": "Firebase Data Model",
+            "pages": [
+              "api/firestore-rooms",
+              "api/firestore-users"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "Real-time multiplayer gameplay using Firebase Firestore",
+    "Multiple room modes: Solo, Versus, Party (up to 5), Mega Party (up to 10), and custom player limits",
+    "Public and private rooms with optional late-join support",
+    "Custom word lists provided by the room creator",
+    "In-room chat messaging between players",
+    "Google OAuth authentication with persistent guest sessions via UUID cookie",
+    "Player profiles with stats (games played, wins, total points)",
+    "Progressive Web App (PWA) with mobile-first design",
+    "Animated UI powered by Framer Motion",
+    "Word validation and random word generation via Fastify backend"
+  ],
+  "publicApiSurface": [
+    "GET /api/words?count={n} — Returns n random 5-letter words",
+    "GET /api/valid?word={word} — Validates whether a word is an acceptable guess",
+    "DELETE /api/rooms — Clears all rooms from Firestore (admin)",
+    "Firestore collection: rooms/{id} — Room document with game state",
+    "Firestore collection: rooms/{id}/players/{uid} — Per-player game state",
+    "Firestore collection: rooms/{id}/messages — In-room chat messages",
+    "Firestore collection: users/{uid} — User profile and stats"
+  ]
+}

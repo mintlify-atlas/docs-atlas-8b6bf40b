@@ -1,0 +1,78 @@
+---
+title: "GET /api/valid — validate a word guess"
+description: "GET /api/valid checks if a submitted word is in the Neo Letter guesses dictionary. Returns isValid boolean; 400 if word is not exactly five characters."
+---
+
+Before accepting a guess, the React client calls this endpoint to confirm the word is in the recognized guesses dictionary. The check is case-insensitive — the server lowercases the input before comparing it against the list. If the word is not exactly five characters the server immediately rejects it with a `400` status without consulting the dictionary.
+
+## Endpoint
+
+```
+GET /api/valid
+```
+
+## Query parameters
+
+<ParamField query="word" type="string" required>
+  The word to validate. Must be exactly five characters; otherwise the server returns `400`.
+</ParamField>
+
+## Responses
+
+**200 OK** — word is exactly five characters (may still be invalid)
+
+<ResponseField name="isValid" type="boolean" required>
+  `true` if the word is in the valid-guesses list, `false` if it is not.
+</ResponseField>
+
+**400 Bad Request** — word is not exactly five characters
+
+<ResponseField name="isValid" type="boolean" required>
+  Always `false` when the word length check fails.
+</ResponseField>
+
+## Examples
+
+<CodeGroup>
+
+```bash Valid word
+curl "https://neo-letter-fastify.vercel.app/api/valid?word=crane"
+```
+
+```bash Invalid word (wrong length)
+curl "https://neo-letter-fastify.vercel.app/api/valid?word=hi"
+```
+
+```bash Not in the list
+curl "https://neo-letter-fastify.vercel.app/api/valid?word=zzzzz"
+```
+
+</CodeGroup>
+
+**200 — word is valid**
+
+```json
+{
+  "isValid": true
+}
+```
+
+**200 — word is not in the list**
+
+```json
+{
+  "isValid": false
+}
+```
+
+**400 — word is not five characters**
+
+```json
+{
+  "isValid": false
+}
+```
+
+<Note>
+  The comparison is always case-insensitive. Sending `CRANE`, `crane`, or `Crane` all produce the same result.
+</Note>

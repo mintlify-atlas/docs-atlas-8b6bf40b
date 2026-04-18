@@ -1,0 +1,60 @@
+---
+title: "DELETE /api/rooms — clear all game rooms"
+description: "Removes every room document and its players and messages subcollections from Firestore. Returns 202 when rooms are deleted or 404 when none exist."
+---
+
+This is a maintenance endpoint intended for administrative use. When called, the server reads all room IDs from the `rooms` collection and, for each room, deletes its `players` subcollection, its `messages` subcollection, and the room document itself. The operation affects every active room simultaneously.
+
+<Warning>
+  This is a destructive, irreversible operation. All active game rooms — including ongoing games, player state, and chat history — are permanently removed from Firestore. Use with caution.
+</Warning>
+
+## Endpoint
+
+```
+DELETE /api/rooms
+```
+
+## Request body
+
+None.
+
+## Responses
+
+**202 Accepted** — at least one room existed and the deletion was initiated
+
+<ResponseField name="message" type="string" required>
+  Always `"deleted rooms"` on success.
+</ResponseField>
+
+**404 Not Found** — no rooms exist in Firestore
+
+<ResponseField name="message" type="string" required>
+  Always `"no rooms to delete"` when the collection is empty.
+</ResponseField>
+
+## Example
+
+```bash cURL
+curl -X DELETE "https://neo-letter-fastify.vercel.app/api/rooms"
+```
+
+**202 response**
+
+```json
+{
+  "message": "deleted rooms"
+}
+```
+
+**404 response**
+
+```json
+{
+  "message": "no rooms to delete"
+}
+```
+
+<Note>
+  Deletion of subcollection documents is initiated asynchronously per room. The `202 Accepted` status is returned as soon as the server begins the operation, not after all documents are confirmed deleted.
+</Note>

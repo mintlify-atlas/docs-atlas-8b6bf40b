@@ -1,0 +1,124 @@
+---
+title: "Running Neo Letter locally"
+description: "Set up the React client and Fastify backend on your machine so you can develop and test Neo Letter contributions before opening a pull request."
+---
+
+Neo Letter consists of two packages that run as separate processes: the Vite-based React frontend and the Fastify API server. You need both running at the same time for a fully functional local environment. This guide walks you through setting up each one.
+
+## Prerequisites
+
+- **Node.js** v16 or later
+- **pnpm** — both packages use pnpm as their package manager
+- **A Firebase project** with Firestore enabled (the frontend uses Firestore for real-time room state)
+
+<Warning>
+  You need a Firebase project with Firestore enabled before the React client will connect successfully. Without valid Firebase credentials the app will load but room creation and joining will fail. Visit the [Firebase console](https://console.firebase.google.com/) to create a project if you don't have one.
+</Warning>
+
+## Setup
+
+<Steps>
+  <Step title="Clone the repository">
+    ```bash
+    git clone https://github.com/NeoPrint3D/Neo-Letter.git
+    cd Neo-Letter
+    ```
+  </Step>
+  <Step title="Install dependencies for both packages">
+    Install dependencies in each package directory separately.
+
+    <CodeGroup>
+
+    ```bash pnpm
+    # Install frontend dependencies
+    cd react-client
+    pnpm install
+
+    # Install backend dependencies
+    cd ../fastify-server
+    pnpm install
+    ```
+
+    ```bash npm
+    # Install frontend dependencies
+    cd react-client
+    npm install
+
+    # Install backend dependencies
+    cd ../fastify-server
+    npm install
+    ```
+
+    ```bash yarn
+    # Install frontend dependencies
+    cd react-client
+    yarn
+
+    # Install backend dependencies
+    cd ../fastify-server
+    yarn
+    ```
+
+    </CodeGroup>
+  </Step>
+  <Step title="Configure Firebase environment variables">
+    Create a `.env` file inside `react-client/` with your Firebase project credentials. You can find these values in your Firebase project's **Project settings → Your apps → SDK setup and configuration**.
+
+    ```bash react-client/.env
+    VITE_FIRE_API_KEY=your_api_key
+    VITE_FIRE_AUTH_DOM=your_project.firebaseapp.com
+    VITE_FIRE_DB_URL=https://your_project-default-rtdb.firebaseio.com
+    VITE_FIRE_PRJ_ID=your_project_id
+    VITE_FIRE_STG_BKT=your_project.appspot.com
+    VITE_FIRE_MSG_ID=your_messaging_sender_id
+    VITE_FIRE_APP_ID=your_app_id
+    VITE_FIRE_MESG_ID=your_measurement_id
+    ```
+  </Step>
+  <Step title="Start the Fastify server">
+    In a terminal, start the backend. It listens on port 4000.
+
+    ```bash
+    cd fastify-server
+    pnpm dev
+    ```
+
+    You should see `Fastify server listening at http://localhost:4000` in the output.
+  </Step>
+  <Step title="Start the React client">
+    In a second terminal, start the frontend. It listens on port 3050.
+
+    ```bash
+    cd react-client
+    pnpm dev
+    ```
+  </Step>
+  <Step title="Open the app">
+    Navigate to [http://localhost:3050](http://localhost:3050) in your browser. You should see the Neo Letter home screen.
+  </Step>
+</Steps>
+
+<Note>
+  In development mode the React client automatically targets `http://localhost:4000` for all API calls — no extra configuration is needed. In production the client points to `https://neo-letter-fastify.vercel.app`.
+</Note>
+
+## Available scripts
+
+### React client (`react-client/`)
+
+| Command | Description |
+|---|---|
+| `pnpm dev` | Start Vite dev server on port 3050 with hot reload |
+| `pnpm build` | Type-check and build for production |
+| `pnpm deploy` | Build and deploy to Firebase Hosting |
+
+### Fastify server (`fastify-server/`)
+
+| Command | Description |
+|---|---|
+| `pnpm dev` | Start server with nodemon (auto-restarts on file changes) |
+| `pnpm start` | Start server in production mode |
+
+## CORS in development
+
+The Fastify server allows requests from any `localhost` port when `NODE_ENV` is set to `development`. The `pnpm dev` script sets this automatically (using the Windows `set` command syntax in `package.json` — on macOS/Linux this is handled by `nodemon` picking up the environment). No manual CORS configuration is needed for local work.

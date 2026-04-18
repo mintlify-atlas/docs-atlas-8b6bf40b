@@ -1,0 +1,55 @@
+---
+title: "Neo Letter: The Multiplayer Wordle Party Game"
+description: "Neo Letter is a real-time multiplayer Wordle game built with React and Firebase. Create rooms, invite friends, and compete to guess five-letter words."
+---
+
+Neo Letter brings the classic Wordle format into a live multiplayer experience. Create a room, share the code with friends, and race to guess the five-letter word before anyone else does — all in real time, powered by Firebase Firestore.
+
+<CardGroup cols={2}>
+  <Card title="Quick Start" icon="rocket" href="/quickstart">
+    Go from zero to playing your first multiplayer game in minutes.
+  </Card>
+  <Card title="How to Play" icon="gamepad" href="/gameplay/how-to-play">
+    Learn the rules, tile colors, and how rounds work.
+  </Card>
+  <Card title="Create a Room" icon="plus" href="/gameplay/creating-a-room">
+    Configure player limits, custom words, and room privacy settings.
+  </Card>
+  <Card title="API Reference" icon="code" href="/api/overview">
+    Explore the Fastify backend endpoints powering Neo Letter.
+  </Card>
+</CardGroup>
+
+## What is Neo Letter?
+
+Neo Letter is a free-to-play multiplayer Wordle party game. Up to dozens of players can share a single room and simultaneously guess the same five-letter word each round. The first player to guess correctly wins the round and earns points based on how few attempts they used.
+
+Key highlights:
+
+- **Real-time sync** — All guesses and player states update instantly via Firebase Firestore
+- **Flexible rooms** — Solo practice, 1v1 Versus, Party (5 players), Mega Party (10 players), or custom limits
+- **Custom word lists** — Room creators can supply their own five-letter words
+- **In-room chat** — Optional messaging so players can trash-talk (or celebrate) between rounds
+- **Mobile-first** — Designed to work beautifully on phones and tablets
+- **Guest-friendly** — No account required to play; sign up with Google to track stats
+
+## How it works
+
+<Steps>
+  <Step title="Create or join a room">
+    Visit [neo-letter.web.app](https://neo-letter.web.app), click **Create** to start a new room or **Join** to enter a room code from a friend.
+  </Step>
+  <Step title="Get ready">
+    Once in the lobby, mark yourself as ready. The game starts when all players are ready.
+  </Step>
+  <Step title="Guess the word">
+    Type a five-letter word and press Enter. Tiles turn green (correct position), yellow (wrong position), or gray (not in the word).
+  </Step>
+  <Step title="Win rounds and score points">
+    The first player to guess correctly wins the round. Points are awarded based on the number of guesses used. After all rounds are complete, the player with the highest score wins the game.
+  </Step>
+</Steps>
+
+<Note>
+  Neo Letter is open source under the MIT license. Contributions are welcome — see the [Contributing guide](/contributing/overview) to get started.
+</Note>

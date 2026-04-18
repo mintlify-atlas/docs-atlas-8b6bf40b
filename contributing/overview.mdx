@@ -1,0 +1,44 @@
+---
+title: "Contributing to Neo Letter"
+description: "Neo Letter is open source and welcomes contributors. Learn how to report bugs, improve the UI, and extend the game with new features."
+---
+
+Neo Letter is an open-source project and contributions of all kinds are welcome — whether you're fixing a bug, improving mobile performance, or adding new words to the game's word pool. This page outlines the areas where help is most needed and points you to the resources to get started.
+
+<Note>
+  Neo Letter is a Hacktoberfest-accepted repository. Pull requests opened during October count toward your Hacktoberfest participation.
+</Note>
+
+## Ways to contribute
+
+The areas where contributions are most needed:
+
+- **Bug hunting** — Find unique scenarios that could cause the game to break or produce unexpected behavior
+- **Visual QA** — Identify visual inconsistencies across browsers, screen sizes, and device types
+- **Mobile performance** — Improve rendering speed and interaction responsiveness on mobile devices
+- **Leaderboard feature** — Implement a leaderboard that shows each player's current rank
+- **Word list expansion** — Add at least 20 appropriate five-letter words to the answer pool
+
+## Repository structure
+
+Neo Letter is split into two separate packages, each with its own dependencies and dev server:
+
+| Package | Path | Technology |
+|---|---|---|
+| Frontend | `react-client/` | Vite, React 17, TypeScript, Firebase SDK, Tailwind CSS |
+| Backend | `fastify-server/` | Node.js, Fastify, Firebase Admin SDK |
+
+The two packages are independent — you can run either one on its own. In development, the frontend connects to the backend at `http://localhost:4000` automatically.
+
+The source repository is at [github.com/NeoPrint3D/Neo-Letter](https://github.com/NeoPrint3D/Neo-Letter).
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Local setup" icon="terminal" href="/contributing/local-setup">
+    Run both the React client and Fastify server on your machine.
+  </Card>
+  <Card title="Adding words" icon="list" href="/contributing/adding-words">
+    Expand the word pool by contributing five-letter words to the word list.
+  </Card>
+</CardGroup>

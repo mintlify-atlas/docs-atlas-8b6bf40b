@@ -1,0 +1,176 @@
+---
+title: "Self-hosting Neo Letter"
+description: "Run your own instance of Neo Letter locally or in production using the React client and Fastify backend with your own Firebase project."
+---
+
+Neo Letter is split into two independently deployable services: a React frontend built with Vite and a Fastify backend that serves the word list and validates guesses. Both services connect to Firebase Firestore for real-time room state. This guide walks you through running both services on your local machine and deploying them to production.
+
+<Warning>
+  Self-hosting Neo Letter requires a Firebase project with Firestore and Authentication enabled. You must create the project yourself and supply the credentials described below before either service will start correctly.
+</Warning>
+
+## Prerequisites
+
+- Node.js 16 or later
+- pnpm (recommended), npm, or yarn
+- A Firebase project with the following services enabled:
+  - **Firestore** — stores rooms, players, and messages
+  - **Authentication** — Google sign-in provider (enable the Google provider)
+  - **Hosting** (optional) — only needed if you want to use `firebase deploy`
+- Firebase Admin SDK credentials for the backend (a service account JSON file)
+
+## Part 1 — React client
+
+The React client is a Vite + TypeScript application located in `react-client/`.
+
+<Steps>
+  <Step title="Install dependencies">
+    <CodeGroup>
+
+    ```bash npm
+    npm install
+    ```
+
+    ```bash yarn
+    yarn install
+    ```
+
+    ```bash pnpm
+    pnpm install
+    ```
+
+    </CodeGroup>
+  </Step>
+  <Step title="Configure Firebase environment variables">
+    Create a `.env` file at the root of `react-client/` with the following variables. Copy the values from your Firebase project settings under **Project settings → General → Your apps → SDK setup and configuration**.
+
+    ```bash .env
+    VITE_FIRE_API_KEY=your_api_key
+    VITE_FIRE_AUTH_DOM=your_project.firebaseapp.com
+    VITE_FIRE_DB_URL=https://your_project-default-rtdb.firebaseio.com
+    VITE_FIRE_PRJ_ID=your_project_id
+    VITE_FIRE_STG_BKT=your_project.appspot.com
+    VITE_FIRE_MSG_ID=your_messaging_sender_id
+    VITE_FIRE_APP_ID=your_app_id
+    VITE_FIRE_MESG_ID=your_measurement_id
+    ```
+
+    All variables are prefixed with `VITE_` so that Vite exposes them to the browser bundle via `import.meta.env`.
+  </Step>
+  <Step title="Start the development server">
+    ```bash
+    pnpm dev
+    ```
+
+    The client starts on **port 3050** at `http://localhost:3050`. In development mode the client points at `http://localhost:4000` for all API calls, so the Fastify server must be running alongside it.
+  </Step>
+  <Step title="Build for production">
+    ```bash
+    pnpm build
+    ```
+
+    This runs `tsc` (TypeScript type-check) followed by `vite build`. Output lands in `dist/`.
+  </Step>
+  <Step title="Deploy to Firebase Hosting">
+    ```bash
+    pnpm deploy
+    ```
+
+    This command runs `tsc && vite build && react-snap && firebase deploy` in sequence. `react-snap` pre-renders routes for SEO before handing off to `firebase deploy`.
+
+    <Note>
+      You must be signed in with the Firebase CLI (`firebase login`) and have initialized your project (`firebase init`) before running `pnpm deploy`.
+    </Note>
+  </Step>
+</Steps>
+
+### Available client scripts
+
+| Script | Command | Description |
+| --- | --- | --- |
+| `dev` | `vite dev --port 3050` | Development server on port 3050 |
+| `build` | `tsc && vite build` | Type-check and build for production |
+| `deploy` | `tsc && vite build && react-snap && firebase deploy` | Full production build and deploy |
+
+## Part 2 — Fastify server
+
+The backend is a Node.js ESM application located in `fastify-server/`. It serves the word list, validates guesses, and manages room cleanup via Firebase Admin.
+
+<Steps>
+  <Step title="Install dependencies">
+    <CodeGroup>
+
+    ```bash npm
+    npm install
+    ```
+
+    ```bash yarn
+    yarn install
+    ```
+
+    ```bash pnpm
+    pnpm install
+    ```
+
+    </CodeGroup>
+  </Step>
+  <Step title="Configure Firebase Admin credentials">
+    The server uses `firebase-admin` to interact with Firestore. Place your service account key file in the `fastify-server/` directory and configure it in `src/utils/firebase.js`.
+
+    Set any required environment variables in a `.env` file at the root of `fastify-server/`. The server loads it automatically via `dotenv`.
+  </Step>
+  <Step title="Start the development server">
+    ```bash
+    pnpm dev
+    ```
+
+    This runs `nodemon src/index.js` with `NODE_ENV=development` (the `package.json` script uses the Windows `set` syntax; on macOS/Linux you may need to set `NODE_ENV=development` explicitly or use a cross-env wrapper). The server starts on **port 4000** at `http://localhost:4000`.
+
+    In development, the server allows CORS requests from all `localhost` ports (1–10000). In production it restricts origins to `https://neo-letter.web.app` only.
+  </Step>
+  <Step title="Start in production mode">
+    ```bash
+    pnpm start
+    ```
+
+    Sets `NODE_ENV=production` and starts the server with `node src/index.js`. The `PORT` environment variable overrides the default port of 4000.
+  </Step>
+</Steps>
+
+### Available server scripts
+
+| Script | Command | Description |
+| --- | --- | --- |
+| `dev` | `nodemon src/index.js` | Development server with hot reload |
+| `start` | `node src/index.js` | Production server |
+
+### API endpoints
+
+| Method | Path | Description |
+| --- | --- | --- |
+| `GET` | `/api/words` | Returns `count` random five-letter words (default: 10) |
+| `GET` | `/api/valid` | Checks whether a given `word` is a valid guess |
+| `DELETE` | `/api/rooms` | Deletes all rooms and their sub-collections from Firestore |
+
+The hosted production API is available at `https://neo-letter-fastify.vercel.app`. The React client uses this endpoint automatically when built for production.
+
+## CORS configuration
+
+CORS behavior is controlled by `NODE_ENV` in `fastify-server/src/index.js`:
+
+```javascript
+const allOriginsNumbers =
+  process.env.NODE_ENV.trim() === "production"
+    ? []
+    : Array.from({ length: 10000 }, (_, i) => `http://localhost:${i + 1}`);
+
+app.use(cors({
+  origin: [
+    ...allOriginsNumbers,
+    "https://neo-letter.web.app",
+  ],
+}));
+```
+
+- **Development** — all `http://localhost:<port>` origins are allowed alongside the production domain.
+- **Production** — only `https://neo-letter.web.app` is allowed. If you deploy to a different domain, update this list before deploying the server.

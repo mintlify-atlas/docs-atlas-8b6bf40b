@@ -1,0 +1,73 @@
+---
+title: "Adding words to Neo Letter's word list"
+description: "Contribute five-letter words to Neo Letter's answer pool and valid guess list. Each contribution should add at least 20 appropriate words."
+---
+
+Neo Letter's backend serves words from two static JSON files. One file holds the pool of words that can become round answers; the other holds every word the server accepts as a valid guess. Adding words to either file is one of the most beginner-friendly ways to contribute to the project.
+
+## The two word files
+
+| File | Path | Purpose |
+|---|---|---|
+| Answer pool | `fastify-server/src/static/words.json` | Words randomly selected as the answer for each round |
+| Valid guesses | `fastify-server/src/static/validGuesses.json` | All words the server accepts when a player submits a guess |
+
+Both files share the same JSON structure:
+
+```json
+{
+  "words": ["apple", "crane", "light"]
+}
+```
+
+If you add a word to the answer pool, consider also adding it to the valid guesses file so players can use it as a guess even when it isn't the round's answer.
+
+## Requirements for answer words
+
+- Exactly five letters — the server rejects any guess that isn't five characters long
+- Real English words — no proper nouns, abbreviations, or invented words
+- Appropriate content — no profanity or offensive terms
+- Each contribution should include **at least 20 new words**
+
+<Warning>
+  Words must be exactly five letters. The `/api/valid` endpoint checks `word.length !== 5` and returns `400 isValid: false` for any other length. A word that passes your local spell-check but has the wrong length will never be guessable in game.
+</Warning>
+
+## How to add words
+
+<Steps>
+  <Step title="Fork the repository">
+    Fork [NeoPrint3D/Neo-Letter](https://github.com/NeoPrint3D/Neo-Letter) on GitHub, then clone your fork locally.
+
+    ```bash
+    git clone https://github.com/<your-username>/Neo-Letter.git
+    ```
+  </Step>
+  <Step title="Open words.json">
+    Open `fastify-server/src/static/words.json` in your editor. The file contains a single `words` array of lowercase strings.
+  </Step>
+  <Step title="Add your five-letter words">
+    Append your words to the array. Keep them lowercase and comma-separated. Add at least 20 words per pull request.
+
+    ```json
+    {
+      "words": [
+        "blood",
+        "power",
+        "giant",
+        "amber",
+        "brave"
+      ]
+    }
+    ```
+
+    If your words are also valid guesses (they almost always will be), add the same words to `fastify-server/src/static/validGuesses.json`.
+  </Step>
+  <Step title="Open a pull request">
+    Commit your changes and open a pull request against the `master` branch. Include a short description of the words you added and confirm they are all exactly five letters and appropriate in content.
+  </Step>
+</Steps>
+
+<Tip>
+  Test your additions locally before opening a pull request. Run the Fastify server with `pnpm dev` inside `fastify-server/`, then send a request to `http://localhost:4000/api/valid?word=yourword` to confirm the server accepts it. See [Running Neo Letter locally](/contributing/local-setup) for full setup instructions.
+</Tip>

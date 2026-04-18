@@ -1,0 +1,62 @@
+---
+title: "Creating a room in Neo Letter"
+description: "Set up a Neo Letter game room, choose a mode, configure options like custom words and late joining, and share your room code."
+---
+
+Creating a room gives you full control over how the game is played. You choose the number of players, how many rounds to play, whether to use your own words, and whether to allow chat. Once the room is created you are redirected to the join page where you can share the 5-digit room code with friends.
+
+## Creation flow
+
+<Steps>
+  <Step title="Go to /create">
+    Navigate to the Create Room page. You can also reach it from the Join page by clicking the **Create Room** link.
+  </Step>
+  <Step title="Choose a game mode">
+    Select a mode from the dropdown to set the maximum number of players. See the [game modes table](#game-modes) below for a full breakdown.
+  </Step>
+  <Step title="Set the number of rounds">
+    Enter how many rounds you want to play. Each round uses one word. This field is only shown when custom words are disabled — when custom words are on, the number of rounds equals the number of words you add.
+  </Step>
+  <Step title="Configure room options">
+    Toggle the options below the mode selector to shape the gameplay experience. See the [room options table](#room-options) for details on each setting.
+  </Step>
+  <Step title="Add custom words (optional)">
+    If you enabled **Cust. Words**, click **Choose Custom Words** to open the word editor. Type a 5-letter word and press enter to add it. Each word becomes one round. Click any added word to remove it.
+  </Step>
+  <Step title="Click Create Party">
+    Clicking **Create Party** generates the room in Firebase, fetches random words from the server if needed, and redirects you to `/join` with your room ID pre-filled.
+  </Step>
+  <Step title="Share the room code">
+    Copy the 5-digit room code from the join page and send it to your friends. They enter the code at `/join` to enter the lobby.
+  </Step>
+</Steps>
+
+## Game modes
+
+| Mode | Max players | Best for |
+|------|-------------|----------|
+| Solo | 1 | Practicing alone; stats still count toward your profile |
+| Versus | 2 | Head-to-head matches with one other player |
+| Party | 5 | Small groups and casual play sessions |
+| Mega Party | 10 | Larger groups or streaming with an audience |
+| Custom | Any (enter a number) | Tournaments or group sizes that don't fit a preset |
+
+When **Custom** is selected, a numeric input appears where you can type in any player limit.
+
+## Room options
+
+| Option | Field name | Default | Description |
+|--------|------------|---------|-------------|
+| Late Starts | `allowLateJoiners` | On | Allows players to join after the game has already started |
+| Cust. Words | `customWords` | Off | Lets the creator supply their own 5-letter words instead of using random server words |
+| Private | `roomType` | On | Hides the room from any public listing; players must know the code to join |
+| Chatting | `allowMessages` | On | Enables the in-room chat panel during gameplay (always off in Solo mode) |
+| Profanity | `allowProfanity` | Off | Allows profanity in chat messages and display names |
+
+<Note>
+  Chat is automatically disabled for Solo mode rooms regardless of the Chatting toggle.
+</Note>
+
+<Warning>
+  If you enable **Cust. Words** but do not add at least one word, the game will show an error when you try to create the room.
+</Warning>
